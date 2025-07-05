@@ -1,5 +1,6 @@
 package com.jakhongir.gelocation.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jakhongir.gelocation.properties.GeolocationProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -18,7 +19,7 @@ import java.time.Duration;
 @Configuration
 @RequiredArgsConstructor
 public class CacheConfig {
-
+    private final ObjectMapper objectMapper;
     private final GeolocationProperties properties;
 
     @Bean
@@ -27,7 +28,7 @@ public class CacheConfig {
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofDays(properties.getCache().getTtlDays()))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)));
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(cacheConfiguration)

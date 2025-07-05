@@ -18,12 +18,12 @@ public class FreeIpApiProvider implements IpGeolocationProvider {
     private static final String PROVIDER_NAME = "freeipapi";
     private final RestTemplate restTemplate;
     private final GeolocationProperties properties;
-    private final String baseUrl = properties.getProvider().getFreeipapi().getBaseUrl();
 
     @Override
     public IpLocationResponse getLocationData(String ipAddress) {
        try {
            log.info("Querying FreeIpAPI for IP: {}", ipAddress);
+           String baseUrl = properties.getProvider().getFreeipapi().getBaseUrl();
            String url = baseUrl + "/" + ipAddress;
            FreeIpApiResponse response = restTemplate.getForObject(url, FreeIpApiResponse.class);
 
