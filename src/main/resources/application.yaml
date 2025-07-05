@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: geolocation
@@ -10,3 +13,20 @@ spring:
     redis:
       cache-null-values: false
       time-to-live: 30d
+
+geolocation:
+  provider:
+    primary: freeipapi
+    fallback-order:
+      "1": freeipapi
+    freeipapi:
+      base-url: https://freeipapi.com/api/json
+      timeout-seconds: 10
+      retry-attempts: 3
+  rate-limit:
+    requests-per-second: 1
+    max-wait-time-seconds: 30
+    bucket-capacity: 5
+  cache:
+    ttl-days: 30
+    max-entries: 100000

@@ -1,10 +1,13 @@
 package com.jakhongir.gelocation.properties;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.Map;
 
 @Data
 @Validated
@@ -15,6 +18,9 @@ public class GeolocationProperties {
 
     @NotNull
     private RateLimitProperties rateLimit = new RateLimitProperties();
+
+    @NotNull
+    private ProviderProperties provider = new ProviderProperties();
 
 
     @Data
@@ -33,5 +39,31 @@ public class GeolocationProperties {
         private int maxWaitTimeSeconds = 30;
         @Positive
         private int bucketCapacity = 5;
+    }
+
+    @Data
+    public static class ProviderProperties {
+        @NotBlank
+        private String primary = "freeipapi";
+
+        @NotNull
+        private Map<String, String> fallbackOrder = Map.of(
+                "1", "freeipapi"
+        );
+
+        @NotNull
+        private GeolocationProperties.ProviderProperties.FreeIpApiProperties freeipapi = new FreeIpApiProperties();
+
+        @Data
+        public static class FreeIpApiProperties {
+            @NotBlank
+            private String baseUrl = "https://freeipapi.com/api/json";
+
+            @Positive
+            private int timeoutSeconds = 10;
+
+            @Positive
+            private int retryAttempts = 3;
+        }
     }
 }
