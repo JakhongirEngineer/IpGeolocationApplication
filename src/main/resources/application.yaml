@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: geolocation
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000ms
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: 30d
