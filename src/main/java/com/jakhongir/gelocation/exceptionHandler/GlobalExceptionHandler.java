@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
-        log.error("Unexpected error: {}", e.getMessage());
+        log.error("Unexpected error: {}", e.getMessage(), e);
         ErrorResponse error = new ErrorResponse("INTERNAL_ERROR", "unexpected error occurred");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
