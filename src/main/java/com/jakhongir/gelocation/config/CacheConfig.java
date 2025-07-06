@@ -1,6 +1,7 @@
 package com.jakhongir.gelocation.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jakhongir.gelocation.model.IpLocationResponse;
 import com.jakhongir.gelocation.properties.GeolocationProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -11,6 +12,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -25,10 +27,14 @@ public class CacheConfig {
     @Bean
     @ConditionalOnProperty(name = "spring.redis.host")
     public CacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
+        Jackson2JsonRedisSerializer<IpLocationResponse> valueSerializer =
+                new Jackson2JsonRedisSerializer<>(objectMapper, IpLocationResponse.class);
+
+
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofDays(properties.getCache().getTtlDays()))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(valueSerializer));
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(cacheConfiguration)
