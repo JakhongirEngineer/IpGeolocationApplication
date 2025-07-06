@@ -10,8 +10,11 @@ public class IPv4ValidatorRegex {
             "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$";
     private static final Pattern pattern = Pattern.compile(IPV4_PATTERN);
 
-    public static boolean isValid(final String email) {
-        Matcher matcher = pattern.matcher(email);
+    public static boolean isValid(final String ipAddress) {
+        if (ipAddress == null || ipAddress.isBlank()) {
+            return false;
+        }
+        Matcher matcher = pattern.matcher(ipAddress);
         return matcher.matches();
     }
 }
